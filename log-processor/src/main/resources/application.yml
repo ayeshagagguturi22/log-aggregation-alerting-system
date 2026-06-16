@@ -10,8 +10,15 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none        # tables are created by docker/init.sql
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        # Hibernate batch insert settings
+        # Without these, saveAll() still does individual INSERTs
+        # With these, Hibernate groups them into batches of 100
+        jdbc:
+          batch_size: 100
+        order_inserts: true   # group INSERT statements by entity type before batching
+        order_updates: true   # same for UPDATEs
